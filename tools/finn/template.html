@@ -1,0 +1,1671 @@
+<meta charset="utf-8">
+<title>Leilighetsjakt Oslo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+
+<style>
+  :root {
+    /* Fjord palette: cold slate neutrals, petrol accent, one warm signal colour. */
+    --ground: #f2f4f3;
+    --surface: #ffffff;
+    --surface-2: #e9edec;
+    --ink: #10181b;
+    --ink-2: #465055;
+    --ink-3: #6d787d;
+    --line: #d3dad8;
+    --line-strong: #b3bebb;
+    --accent: #14535f;
+    --accent-soft: #d7e6e8;
+    --accent-ink: #ffffff;
+    --signal: #8a3b1f;
+    --signal-soft: #f2e0d8;
+    --bar: #9dc3c7;
+
+    --r-sm: 3px;
+    --r-md: 6px;
+    --shadow-panel: 0 18px 48px -20px rgba(10, 30, 34, 0.45);
+
+    --font-display: 'Bricolage Grotesque', 'Helvetica Neue', Arial, sans-serif;
+    --font-body: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --ground: #0e1416;
+      --surface: #151d20;
+      --surface-2: #1d282b;
+      --ink: #e6ecea;
+      --ink-2: #a3b0b2;
+      --ink-3: #7c8a8d;
+      --line: #263336;
+      --line-strong: #35474b;
+      --accent: #7fc9d3;
+      --accent-soft: #1b3a41;
+      --accent-ink: #08171a;
+      --signal: #e8a184;
+      --signal-soft: #3a231a;
+      --bar: #2f5c64;
+      --shadow-panel: 0 18px 48px -20px rgba(0, 0, 0, 0.75);
+    }
+  }
+
+  :root[data-theme='dark'] {
+    --ground: #0e1416;
+    --surface: #151d20;
+    --surface-2: #1d282b;
+    --ink: #e6ecea;
+    --ink-2: #a3b0b2;
+    --ink-3: #7c8a8d;
+    --line: #263336;
+    --line-strong: #35474b;
+    --accent: #7fc9d3;
+    --accent-soft: #1b3a41;
+    --accent-ink: #08171a;
+    --signal: #e8a184;
+    --signal-soft: #3a231a;
+    --bar: #2f5c64;
+    --shadow-panel: 0 18px 48px -20px rgba(0, 0, 0, 0.75);
+  }
+
+  * { box-sizing: border-box; }
+
+  /* The view containers set display, which would otherwise beat the user-agent
+     rule for [hidden] and leave every view visible at once. */
+  [hidden] { display: none !important; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1360px; margin: 0 auto; padding: 28px 22px 80px; }
+
+  /* ---------------------------------------------------------------- header */
+
+  header.masthead {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 18px 32px;
+    padding-bottom: 18px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0 0 6px;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(30px, 4.4vw, 46px);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .stats { display: flex; flex-wrap: wrap; gap: 26px; }
+  .stat { display: flex; flex-direction: column; gap: 1px; }
+  .stat dt {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .stat dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat dd small { font-size: 12px; font-weight: 400; color: var(--ink-3); font-family: var(--font-body); }
+
+  /* -------------------------------------------------------------- controls */
+
+  .controls {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 14px;
+    padding: 12px 0;
+    margin-bottom: 4px;
+    background: var(--ground);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .group { display: flex; align-items: center; gap: 6px; }
+  .group > .group-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-right: 2px;
+  }
+
+  .chip {
+    font: inherit;
+    font-size: 13px;
+    padding: 5px 11px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--ink); }
+  .chip[aria-pressed='true'] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .seg { display: inline-flex; border: 1px solid var(--line-strong); border-radius: var(--r-md); overflow: hidden; }
+  .seg button {
+    font: inherit;
+    font-size: 13px;
+    padding: 5px 14px;
+    border: 0;
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+  }
+  .seg button + button { border-left: 1px solid var(--line-strong); }
+  .seg button[aria-pressed='true'] { background: var(--accent); color: var(--accent-ink); }
+
+  input[type='search'] {
+    font: inherit;
+    font-size: 13px;
+    padding: 6px 10px;
+    min-width: 190px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    color: var(--ink);
+  }
+  input[type='search']::placeholder { color: var(--ink-3); }
+
+  .count { margin-left: auto; font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); }
+
+  :where(button, a, input, [tabindex]):focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* -------------------------------------------------------------- economy */
+
+  .econ-wrap {
+    margin: 14px 0 2px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+  }
+  .econ-wrap > summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 14px;
+    padding: 9px 14px;
+    cursor: pointer;
+    list-style: none;
+  }
+  .econ-wrap > summary::-webkit-details-marker { display: none; }
+  .econ-wrap > summary::before {
+    content: '▸';
+    color: var(--ink-3);
+    font-size: 11px;
+    transform: translateY(-1px);
+  }
+  .econ-wrap[open] > summary::before { content: '▾'; }
+  .econ-title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .econ-summary { font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-2); }
+
+  .econ {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 20px;
+    padding: 4px 14px 12px;
+    border-top: 1px solid var(--line);
+  }
+  .econ .field { display: flex; align-items: baseline; gap: 6px; }
+  .econ label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .econ input[type='number'] {
+    font: inherit;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    width: 8ch;
+    padding: 3px 6px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-sm);
+    background: var(--ground);
+    color: var(--ink);
+  }
+  .econ input.wide { width: 11ch; }
+  .econ .toggle { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-2); }
+  .econ .toggle input { accent-color: var(--accent); }
+  .econ .basis { margin-left: auto; font-size: 12px; color: var(--ink-3); max-width: 46ch; }
+
+  /* ----------------------------------------------------------------- table */
+
+  /* The table scrolls inside its own pane, so the header sticks to the pane
+     rather than to a guessed offset below the control bar. */
+  .table-scroll { overflow: auto; max-height: calc(100vh - 150px); }
+
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--ground);
+    text-align: left;
+    padding: 8px 10px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    white-space: nowrap;
+    border-bottom: 1px solid var(--line-strong);
+  }
+  thead th.sortable { cursor: pointer; user-select: none; }
+  thead th.sortable:hover { color: var(--ink); }
+  thead th[aria-sort] { color: var(--ink); }
+  thead th .arrow { opacity: 0.45; }
+  th.num, td.num { text-align: right; }
+
+  tbody tr { border-bottom: 1px solid var(--line); cursor: pointer; }
+  tbody tr:hover { background: var(--surface); }
+  tbody tr.is-open { background: var(--accent-soft); }
+  tbody tr.is-dead { color: var(--ink-3); }
+  tbody tr.is-dead .thumb img { filter: grayscale(1); opacity: 0.55; }
+
+  td { padding: 7px 10px; vertical-align: middle; }
+
+  .thumb { width: 78px; padding-left: 0; }
+  .thumb img {
+    display: block;
+    width: 78px;
+    height: 54px;
+    object-fit: cover;
+    border-radius: var(--r-sm);
+    background: var(--surface-2);
+  }
+
+  .addr { display: flex; flex-direction: column; gap: 1px; min-width: 200px; }
+  .addr b { font-weight: 600; font-size: 14.5px; }
+  .addr span { font-size: 12px; color: var(--ink-3); }
+
+  .money { font-family: var(--font-mono); font-size: 13.5px; }
+  .money.lead { font-size: 14.5px; font-weight: 500; }
+
+  /* Bar length encodes kr/m2 relative to the cheapest and dearest in the list. */
+  .rate { position: relative; display: block; padding: 2px 6px; }
+  .rate i {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    background: var(--bar);
+    border-radius: 2px;
+  }
+  .rate span { font-family: var(--font-mono); font-size: 13px; }
+
+  .tag {
+    display: inline-block;
+    font-size: 11.5px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    border: 1px solid var(--line-strong);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+  .tag.dead { border-color: var(--signal); background: var(--signal-soft); color: var(--signal); }
+  .yes { color: var(--accent); font-weight: 600; }
+  .no { color: var(--ink-3); }
+  .maybe { color: var(--signal); font-weight: 600; }
+
+  .pick { width: 30px; }
+  .pick input { width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; }
+
+  /* ----------------------------------------------------------------- cards */
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+    gap: 16px;
+    padding-top: 18px;
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    padding: 0;
+  }
+  .card:hover { border-color: var(--accent); }
+  .card.is-dead img { filter: grayscale(1); opacity: 0.6; }
+  .card img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; background: var(--surface-2); }
+  .card-body { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px 14px; }
+  .card-body h3 { margin: 0; font-family: var(--font-display); font-size: 16px; font-weight: 500; line-height: 1.2; }
+  .card-body .where { font-size: 12px; color: var(--ink-3); margin-top: -4px; }
+  .card-figs { display: flex; justify-content: space-between; gap: 8px; font-family: var(--font-mono); font-size: 12.5px; }
+  .card-figs em { display: block; font-style: normal; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+
+  /* -------------------------------------------------------------- calendar */
+
+  .agenda { display: flex; flex-direction: column; gap: 22px; padding-top: 20px; }
+
+  .day { display: grid; grid-template-columns: 116px 1fr; gap: 0 18px; align-items: start; }
+  .day-label { padding-top: 6px; }
+  .day-label .dow {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.1;
+    text-transform: capitalize;
+  }
+  .day-label .date { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-3); letter-spacing: 0.04em; }
+  .day-label .today {
+    display: inline-block;
+    margin-top: 4px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .slots { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+
+  .slot {
+    display: grid;
+    grid-template-columns: 92px 62px 1fr auto;
+    gap: 14px;
+    align-items: center;
+    width: 100%;
+    padding: 9px 8px 9px 0;
+    border-bottom: 1px solid var(--line);
+    background: none;
+    border-left: 0;
+    border-right: 0;
+    border-top: 0;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+  .slot:hover { background: var(--surface); }
+  .slot .when { font-family: var(--font-mono); font-size: 13px; white-space: nowrap; }
+  .slot img { width: 62px; height: 44px; object-fit: cover; border-radius: var(--r-sm); background: var(--surface-2); display: block; }
+  .slot .who b { display: block; font-weight: 600; font-size: 14.5px; }
+  .slot .who span { font-size: 12px; color: var(--ink-3); }
+  .slot .figs { font-family: var(--font-mono); font-size: 13px; white-space: nowrap; text-align: right; }
+  .slot .figs em { font-style: normal; display: block; font-size: 11px; color: var(--ink-3); }
+  .slot.clash { box-shadow: inset 3px 0 0 var(--signal); padding-left: 10px; }
+  .clash-tag { color: var(--signal); font-size: 11.5px; font-family: var(--font-mono); }
+
+  .no-viewing { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 4px; }
+
+  /* ------------------------------------------------------------------- map */
+
+  .map-view { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 22px; padding-top: 20px; align-items: start; }
+  @media (max-width: 900px) { .map-view { grid-template-columns: 1fr; } }
+
+  .map-plot {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 10px;
+  }
+  .map-plot svg { display: block; width: 100%; height: auto; }
+  .map-plot .pin { cursor: pointer; }
+  .map-plot .pin circle { fill: var(--accent); stroke: var(--surface); stroke-width: 2; }
+  .map-plot .pin text { fill: var(--accent-ink); font-family: var(--font-mono); font-size: 10px; text-anchor: middle; pointer-events: none; }
+  .map-plot .pin.dead circle { fill: var(--ink-3); }
+  .map-plot .pin.origin circle { fill: var(--signal); }
+  .map-plot .pin.active circle { stroke: var(--ink); stroke-width: 3; }
+  .map-plot .ring { fill: none; stroke: var(--line-strong); stroke-dasharray: 3 4; }
+  .map-plot .ring-label { fill: var(--ink-3); font-family: var(--font-mono); font-size: 9px; }
+  .map-plot .scale line { stroke: var(--ink-2); stroke-width: 1.5; }
+  .map-plot .scale text { fill: var(--ink-2); font-family: var(--font-mono); font-size: 10px; }
+
+  .map-list { display: flex; flex-direction: column; gap: 12px; }
+  .map-origin { display: flex; flex-direction: column; gap: 4px; }
+  .map-origin label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .map-origin select {
+    font: inherit;
+    font-size: 13.5px;
+    padding: 5px 8px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    color: var(--ink);
+  }
+
+  .map-legend { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  .map-legend li { border-bottom: 1px solid var(--line); }
+  .map-legend button {
+    display: grid;
+    grid-template-columns: 24px 1fr auto;
+    gap: 10px;
+    align-items: baseline;
+    width: 100%;
+    padding: 7px 4px;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+  .map-legend button:hover { background: var(--surface); }
+  .map-legend .n { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); }
+  .map-legend .who { font-size: 13.5px; }
+  .map-legend .who span { display: block; font-size: 11.5px; color: var(--ink-3); }
+  .map-legend .dist { font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-2); white-space: nowrap; }
+
+  .map-static { display: block; width: 100%; border-radius: var(--r-md); border: 1px solid var(--line); }
+
+  /* ----------------------------------------------------------------- notes */
+
+  .note-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-left: 6px;
+    border-radius: 999px;
+    background: var(--accent);
+    vertical-align: middle;
+  }
+
+  .notes { display: flex; flex-direction: column; gap: 6px; }
+  .notes h3 {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .notes textarea {
+    font: inherit;
+    font-size: 14px;
+    min-height: 110px;
+    padding: 9px 11px;
+    resize: vertical;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--ground);
+    color: var(--ink);
+  }
+  .notes .saved { font-size: 12px; color: var(--ink-3); min-height: 1em; }
+
+  .note-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .note-tools button {
+    font: inherit;
+    font-size: 12.5px;
+    padding: 4px 11px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+  }
+  .note-tools button:hover { border-color: var(--accent); color: var(--ink); }
+
+  /* ---------------------------------------------------------------- detail */
+
+  .sheet {
+    position: fixed;
+    inset: 0 0 0 auto;
+    width: min(820px, 100%);
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border-left: 1px solid var(--line-strong);
+    box-shadow: var(--shadow-panel);
+    transform: translateX(100%);
+    transition: transform 0.22s ease;
+    overflow-y: auto;
+  }
+  .sheet.open { transform: none; }
+  @media (prefers-reduced-motion: reduce) { .sheet { transition: none; } }
+
+  /* -------------------------------------------------------------- gallery */
+
+  /* Galleries mix 16:9 photos with portrait shots and floor plans, so the frame
+     letterboxes rather than crops — the whole image is always visible. */
+  .gallery {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 240px;
+    background: var(--surface-2);
+  }
+  .gallery img.hero {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: min(62vh, 620px);
+    object-fit: contain;
+  }
+
+  .gal-nav {
+    position: absolute;
+    top: calc(50% - 24px);
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    border: 0;
+    background: rgba(12, 24, 26, 0.55);
+    color: #fff;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .gal-nav:hover { background: rgba(12, 24, 26, 0.8); }
+  .gal-nav.prev { left: 10px; }
+  .gal-nav.next { right: 10px; }
+
+  .gal-count {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: rgba(12, 24, 26, 0.62);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+  }
+
+  .gal-strip {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 8px 10px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+  }
+  .gal-strip button { flex: 0 0 auto; padding: 0; border: 2px solid transparent; border-radius: var(--r-sm); background: none; cursor: pointer; line-height: 0; }
+  .gal-strip button[aria-current='true'] { border-color: var(--accent); }
+  .gal-strip img { width: 88px; height: 58px; object-fit: cover; border-radius: 2px; display: block; }
+  .sheet-body { display: flex; flex-direction: column; gap: 16px; padding: 18px 20px 40px; }
+  .sheet h2 { font-family: var(--font-display); font-size: 22px; font-weight: 700; margin: 0; line-height: 1.15; }
+  .sheet .lede { margin: 0; font-size: 14px; color: var(--ink-2); max-width: 68ch; }
+
+  .kv { display: grid; grid-template-columns: 1fr auto; gap: 6px 16px; margin: 0; }
+
+  /* The panel is wide enough for two label/value pairs per row once the
+     viewport can actually give it its full width. */
+  @media (min-width: 900px) {
+    .kv { grid-template-columns: 1fr auto 1fr auto; column-gap: 34px; }
+    .sheet h2 { font-size: 26px; }
+    .sheet-body { padding: 22px 26px 48px; }
+  }
+  .kv dt { font-size: 13px; color: var(--ink-3); }
+  .kv dd { margin: 0; font-family: var(--font-mono); font-size: 13.5px; text-align: right; }
+  .kv .sep { grid-column: 1 / -1; height: 1px; background: var(--line); }
+
+  .sheet-close {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 17px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .btn {
+    display: inline-block;
+    font: inherit;
+    font-size: 14px;
+    padding: 8px 16px;
+    border: 1px solid var(--accent);
+    border-radius: var(--r-md);
+    background: var(--accent);
+    color: var(--accent-ink);
+    text-decoration: none;
+    cursor: pointer;
+    text-align: center;
+  }
+  .btn.ghost { background: transparent; color: var(--accent); }
+
+  .facilities { display: flex; flex-wrap: wrap; gap: 5px; }
+
+  .scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(8, 20, 22, 0.42);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease;
+  }
+  .scrim.open { opacity: 1; pointer-events: auto; }
+
+  /* --------------------------------------------------------------- compare */
+
+  .compare-bar {
+    position: fixed;
+    left: 50%;
+    bottom: 18px;
+    transform: translate(-50%, 130%);
+    z-index: 45;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 12px 9px 18px;
+    background: var(--ink);
+    color: var(--ground);
+    border-radius: 999px;
+    box-shadow: var(--shadow-panel);
+    transition: transform 0.2s ease;
+  }
+  .compare-bar.show { transform: translate(-50%, 0); }
+  .compare-bar span { font-size: 14px; }
+  .compare-bar button { font: inherit; font-size: 13px; padding: 6px 14px; border-radius: 999px; border: 0; cursor: pointer; }
+  .compare-bar .go { background: var(--ground); color: var(--ink); }
+  .compare-bar .clear { background: transparent; color: var(--ground); border: 1px solid currentColor; }
+
+  dialog.compare {
+    width: min(1080px, 94vw);
+    max-height: 88vh;
+    padding: 0;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    color: var(--ink);
+    overflow: auto;
+  }
+  dialog.compare::backdrop { background: rgba(8, 20, 22, 0.5); }
+  .compare-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--surface); }
+  .compare-head h2 { margin: 0; font-family: var(--font-display); font-size: 19px; font-weight: 700; }
+  .compare-grid { overflow-x: auto; padding: 4px 18px 22px; }
+  .compare-grid table { min-width: 560px; }
+  .compare-grid th { text-align: left; padding: 10px 12px 10px 0; font-size: 13px; font-weight: 400; color: var(--ink-3); white-space: nowrap; vertical-align: top; }
+  .compare-grid td { padding: 10px 12px; border-left: 1px solid var(--line); font-family: var(--font-mono); font-size: 13.5px; vertical-align: top; }
+  .compare-grid tr { border-bottom: 1px solid var(--line); }
+  .compare-grid td.best { background: var(--accent-soft); }
+  .compare-grid img { width: 100%; max-width: 190px; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--r-sm); }
+  .compare-grid .name { font-family: var(--font-body); font-weight: 600; font-size: 14px; }
+
+  .empty { padding: 40px 0; color: var(--ink-3); font-size: 15px; }
+
+  footer.note {
+    margin-top: 26px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+    color: var(--ink-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+  }
+  footer.note code { font-family: var(--font-mono); font-size: 12px; }
+
+  @media (max-width: 720px) {
+    .wrap { padding: 20px 14px 90px; }
+    .sheet { width: 100%; }
+  }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div>
+      <p class="eyebrow" id="source-line"></p>
+      <h1>Leilighetsjakt Oslo</h1>
+    </div>
+    <dl class="stats" id="stats"></dl>
+  </header>
+
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Visning">
+      <button type="button" data-view="table" aria-pressed="true">Tabell</button>
+      <button type="button" data-view="cards" aria-pressed="false">Kort</button>
+      <button type="button" data-view="calendar" aria-pressed="false">Visninger</button>
+      <button type="button" data-view="map" aria-pressed="false">Kart</button>
+    </div>
+
+    <div class="group">
+      <span class="group-label">Heis</span>
+      <button type="button" class="chip" data-filter="heis" data-value="ja" aria-pressed="false">Ja</button>
+    </div>
+
+    <div class="group">
+      <span class="group-label">Eieform</span>
+      <span id="eieform-chips"></span>
+    </div>
+
+    <div class="group">
+      <span class="group-label">Soverom</span>
+      <span id="soverom-chips"></span>
+    </div>
+
+    <button type="button" class="chip" data-filter="skjul-deaktiverte" aria-pressed="false">Skjul deaktiverte</button>
+    <button type="button" class="chip" data-filter="med-notat" aria-pressed="false">Med notat</button>
+
+    <input type="search" id="q" placeholder="Sok adresse eller omrade" aria-label="Sok adresse eller omrade">
+
+    <span class="count" id="count"></span>
+  </div>
+
+  <details class="econ-wrap" id="econ-wrap">
+    <summary>
+      <span class="econ-title">Lånegrunnlag</span>
+      <span class="econ-summary" id="econ-summary"></span>
+    </summary>
+    <div class="econ">
+    <div class="field">
+      <label for="equity">Egenkapital</label>
+      <input type="number" id="equity" class="wide" min="0" step="50000" value="1000000">
+    </div>
+    <div class="field">
+      <label for="rate">Rente %</label>
+      <input type="number" id="rate" min="0" max="20" step="0.1" value="5.5">
+    </div>
+    <div class="field">
+      <label for="years">År</label>
+      <input type="number" id="years" min="1" max="40" step="1" value="25">
+    </div>
+    <label class="toggle"><input type="checkbox" id="after-tax"> Etter rentefradrag</label>
+      <p class="basis" id="loan-basis"></p>
+    </div>
+  </details>
+
+  <div class="table-scroll" id="table-view">
+    <table>
+      <thead>
+        <tr id="head-row"></tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+  <div class="cards" id="cards-view" hidden></div>
+
+  <div class="agenda" id="calendar-view" hidden></div>
+
+  <div class="map-view" id="map-view" hidden>
+    <div class="map-plot" id="map-plot"></div>
+    <div class="map-list">
+      <div class="map-origin">
+        <label for="origin">Avstand fra</label>
+        <select id="origin"></select>
+      </div>
+      <ol class="map-legend" id="map-legend"></ol>
+    </div>
+  </div>
+
+  <p class="empty" id="empty" hidden>Ingen boliger passer filtrene.</p>
+
+  <div class="note-tools">
+    <button type="button" id="notes-copy">Kopier notatene</button>
+    <button type="button" id="notes-paste">Lim inn notater</button>
+    <span id="notes-status"></span>
+  </div>
+
+  <footer class="note">
+    <span id="footer-source"></span>
+    <span>Kr/mnd = annuitetslån på kjøpesum minus egenkapital, pluss felleskostnader. Fellesgjeld er holdt utenfor lånet fordi den betjenes gjennom felleskostnadene.</span>
+    <span>Notatene ligger i denne nettleseren, ikke i filen — bruk «Kopier notatene» for å flytte dem.</span>
+    <span>Kr/m² regnes av totalpris delt på internt bruksareal (BRA-i).</span>
+    <span>«Heis?» = heis nevnt i annonseteksten, men ikke tagget som fasilitet.</span>
+  </footer>
+</div>
+
+<div class="scrim" id="scrim"></div>
+
+<aside class="sheet" id="sheet" aria-hidden="true" aria-label="Detaljer">
+  <button type="button" class="sheet-close" id="sheet-close" aria-label="Lukk">×</button>
+  <div id="sheet-content"></div>
+</aside>
+
+<div class="compare-bar" id="compare-bar">
+  <span id="compare-count"></span>
+  <button type="button" class="go" id="compare-go">Sammenlign</button>
+  <button type="button" class="clear" id="compare-clear">Nullstill</button>
+</div>
+
+<dialog class="compare" id="compare-dialog">
+  <div class="compare-head">
+    <h2>Side ved side</h2>
+    <button type="button" class="btn ghost" id="compare-close">Lukk</button>
+  </div>
+  <div class="compare-grid" id="compare-grid"></div>
+</dialog>
+
+<script>
+  const DATA = /*__DATA__*/ [];
+  const META = /*__META__*/ {};
+
+  const kr = new Intl.NumberFormat('nb-NO');
+  const fmt = (n) => (n == null ? '–' : kr.format(n));
+  const perM2 = (a) => (a.totalpris && a.bruksarealInternt ? Math.round(a.totalpris / a.bruksarealInternt) : null);
+  const heisState = (a) => (a.heis === true ? 'ja' : a.heis == null ? 'ukjent' : a.heisNevntITekst ? 'kanskje' : 'nei');
+
+  for (const a of DATA) {
+    a.krM2 = perM2(a);
+    a.heisState = heisState(a);
+    a.haystack = [a.address, a.area, a.title].filter(Boolean).join(' ').toLowerCase();
+  }
+
+  const rates = DATA.map((a) => a.krM2).filter(Boolean);
+  const rateMin = Math.min(...rates);
+  const rateMax = Math.max(...rates);
+
+  // Browser storage can throw outright (private windows, blocked site data),
+  // so every read and write is guarded and the page works without it.
+  const store = {
+    read(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch {
+        return fallback;
+      }
+    },
+    write(key, value) {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+        return true;
+      } catch {
+        return false;
+      }
+    },
+  };
+
+  const LOAN_KEY = 'finn.loan';
+  const NOTES_KEY = 'finn.notes';
+
+  const state = {
+    view: 'table',
+    sort: { key: 'totalpris', dir: 'asc' },
+    heis: false,
+    hideDead: false,
+    eieform: new Set(),
+    soverom: new Set(),
+    q: '',
+    hasNote: false,
+    origin: DATA.find((a) => a.lat != null)?.id ?? null,
+    open: null,
+    shot: 0,
+    picked: new Set(),
+    loan: { equity: 1000000, rate: 5.5, years: 25, afterTax: false, ...store.read(LOAN_KEY, {}) },
+    notes: store.read(NOTES_KEY, {}),
+  };
+
+  // FINN's Totalpris already contains fellesgjeld, but that debt sits with the
+  // borettslag and is repaid through felleskostnader — so the mortgage is taken
+  // on the cash purchase only. That is what makes andel and selveier comparable.
+  const kjopesum = (a) =>
+    a.totalpris != null ? a.totalpris - (a.fellesgjeld ?? 0) : (a.prisantydning ?? 0) + (a.omkostninger ?? 0);
+
+  function monthly(a) {
+    const { equity, rate, years, afterTax } = state.loan;
+    const principal = Math.max(kjopesum(a) - equity, 0);
+    const i = rate / 100 / 12;
+    const n = years * 12;
+    if (!n) return null;
+    const payment = i === 0 ? principal / n : (principal * i) / (1 - (1 + i) ** -n);
+    // The deduction is 22% of interest paid; interest is highest in month one
+    // and falls over the term, so this is the optimistic end of the range.
+    const relief = afterTax ? principal * i * 0.22 : 0;
+    return Math.round(payment - relief + (a.felleskostnader ?? 0));
+  }
+
+  const noteFor = (id) => (state.notes[id] ?? '').trim();
+
+  const COLUMNS = [
+    { key: 'pick', label: '', sortable: false },
+    { key: 'image', label: 'Bilde', sortable: false },
+    { key: 'address', label: 'Adresse', sortable: true },
+    { key: 'totalpris', label: 'Totalpris', sortable: true, num: true },
+    { key: 'felleskostnader', label: 'Felleskost', sortable: true, num: true },
+    { key: 'maanedskost', label: 'Kr/mnd', sortable: true, num: true },
+    { key: 'krM2', label: 'Kr/m²', sortable: true, num: true },
+    { key: 'bruksarealInternt', label: 'BRA-i', sortable: true, num: true },
+    { key: 'etasje', label: 'Etg', sortable: true, num: true },
+    { key: 'soverom', label: 'Sov', sortable: true, num: true },
+    { key: 'eieform', label: 'Eieform', sortable: true },
+    { key: 'heisState', label: 'Heis', sortable: true },
+    { key: 'byggear', label: 'Byggeår', sortable: true, num: true },
+    { key: 'status', label: 'Status', sortable: true },
+  ];
+
+  const el = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+
+  // ---------------------------------------------------------------- filtering
+
+  function visible() {
+    let out = DATA.filter((a) => {
+      if (state.heis && a.heisState !== 'ja') return false;
+      if (state.hideDead && a.deactivated) return false;
+      if (state.eieform.size && !state.eieform.has(a.eieform)) return false;
+      if (state.soverom.size && !state.soverom.has(String(a.soverom))) return false;
+      if (state.hasNote && !noteFor(a.id)) return false;
+      if (state.q && !a.haystack.includes(state.q)) return false;
+      return true;
+    });
+
+    const { key, dir } = state.sort;
+    const sign = dir === 'asc' ? 1 : -1;
+    const value = (ad) => {
+      if (key === 'status') return ad.deactivated ? 1 : 0;
+      if (key === 'etasje') return Number(ad.etasje);
+      if (key === 'maanedskost') return monthly(ad);
+      return ad[key];
+    };
+    out.sort((x, y) => {
+      const a = value(x);
+      const b = value(y);
+      if (a == null && b == null) return 0;
+      if (a == null) return 1;
+      if (b == null) return -1;
+      if (typeof a === 'number' && typeof b === 'number') return (a - b) * sign;
+      return String(a).localeCompare(String(b), 'nb') * sign;
+    });
+    return out;
+  }
+
+  // ------------------------------------------------------------------ render
+
+  function heisCell(a) {
+    if (a.heisState === 'ja') return '<span class="yes">Ja</span>';
+    if (a.heisState === 'kanskje') return '<span class="maybe" title="Nevnt i annonseteksten, men ikke tagget som fasilitet">Heis?</span>';
+    if (a.heisState === 'ukjent') return '<span class="no" title="Fasilitetslisten manglet i annonsen">Ukjent</span>';
+    return '<span class="no">Nei</span>';
+  }
+
+  function renderHead() {
+    el('head-row').innerHTML = COLUMNS.map((c) => {
+      if (!c.sortable) return '<th class="' + (c.key === 'pick' ? 'pick' : c.key === 'image' ? 'thumb' : '') + '">' + esc(c.label) + '</th>';
+      const active = state.sort.key === c.key;
+      const arrow = active ? (state.sort.dir === 'asc' ? '↑' : '↓') : '<span class="arrow">↕</span>';
+      return (
+        '<th class="sortable' + (c.num ? ' num' : '') + '" data-key="' + c.key + '"' +
+        (active ? ' aria-sort="' + (state.sort.dir === 'asc' ? 'ascending' : 'descending') + '"' : '') +
+        ' tabindex="0" role="button">' + esc(c.label) + ' ' + arrow + '</th>'
+      );
+    }).join('');
+  }
+
+  function rateCell(a) {
+    if (!a.krM2) return '<td class="num">–</td>';
+    const pct = rateMax === rateMin ? 100 : 12 + ((a.krM2 - rateMin) / (rateMax - rateMin)) * 88;
+    return '<td class="num"><span class="rate"><span>' + fmt(a.krM2) + '</span><i style="width:' + pct.toFixed(1) + '%"></i></span></td>';
+  }
+
+  function renderTable(list) {
+    el('rows').innerHTML = list.map((a) => (
+      '<tr data-id="' + a.id + '" class="' + (a.deactivated ? 'is-dead ' : '') + (state.open === a.id ? 'is-open' : '') + '">' +
+      '<td class="pick"><input type="checkbox" aria-label="Velg for sammenligning" data-pick="' + a.id + '"' + (state.picked.has(a.id) ? ' checked' : '') + '></td>' +
+      '<td class="thumb">' + (a.thumb ? '<img loading="lazy" src="' + esc(a.thumb) + '" alt="">' : '') + '</td>' +
+      '<td><span class="addr"><b>' + esc(a.address ?? a.id) +
+      (noteFor(a.id) ? '<span class="note-dot" title="Har notat"></span>' : '') +
+      '</b><span>' + esc(a.area ?? '') + '</span></span></td>' +
+      '<td class="num money lead">' + fmt(a.totalpris) + '</td>' +
+      '<td class="num money">' + fmt(a.felleskostnader) + '</td>' +
+      '<td class="num money lead">' + fmt(monthly(a)) + '</td>' +
+      rateCell(a) +
+      '<td class="num money">' + (a.bruksarealInternt ?? '–') + '</td>' +
+      '<td class="num money">' + esc(a.etasje ?? '–') + '</td>' +
+      '<td class="num money">' + (a.soverom ?? '–') + '</td>' +
+      '<td>' + esc(a.eieform ?? '–') + '</td>' +
+      '<td>' + heisCell(a) + '</td>' +
+      '<td class="num money">' + (a.byggear ?? '–') + '</td>' +
+      '<td>' + (a.deactivated ? '<span class="tag dead">Deaktivert</span>' : '<span class="tag">Aktiv</span>') + '</td>' +
+      '</tr>'
+    )).join('');
+  }
+
+  function renderCards(list) {
+    el('cards-view').innerHTML = list.map((a) => (
+      '<button type="button" class="card' + (a.deactivated ? ' is-dead' : '') + '" data-id="' + a.id + '">' +
+      (a.thumb ? '<img loading="lazy" src="' + esc(a.thumbLarge ?? a.thumb) + '" alt="">' : '') +
+      '<span class="card-body">' +
+      '<h3>' + esc(a.address ?? a.id) + (noteFor(a.id) ? '<span class="note-dot" title="Har notat"></span>' : '') + '</h3>' +
+      '<span class="where">' + esc(a.area ?? '') + '</span>' +
+      '<span class="card-figs">' +
+      '<span><em>Totalpris</em>' + fmt(a.totalpris) + '</span>' +
+      '<span><em>Kr/mnd</em>' + fmt(monthly(a)) + '</span>' +
+      '<span><em>Kr/m²</em>' + fmt(a.krM2) + '</span>' +
+      '</span>' +
+      '<span class="card-tags">' +
+      '<span class="tag">' + (a.bruksarealInternt ?? '–') + ' m²</span>' +
+      '<span class="tag">' + (a.soverom ?? '–') + ' sov</span>' +
+      '<span class="tag">' + esc(a.etasje ?? '–') + '. etg</span>' +
+      '<span class="tag">' + esc(a.eieform ?? '–') + '</span>' +
+      (a.heisState === 'ja' ? '<span class="tag">Heis</span>' : a.heisState === 'kanskje' ? '<span class="tag">Heis?</span>' : '') +
+      (a.deactivated ? '<span class="tag dead">Deaktivert</span>' : '') +
+      '</span></span></button>'
+    )).join('');
+  }
+
+  // ---------------------------------------------------------------- calendar
+
+  const dayFmt = new Intl.DateTimeFormat('nb-NO', { weekday: 'long', timeZone: 'Europe/Oslo' });
+  const dateFmt = new Intl.DateTimeFormat('nb-NO', { day: '2-digit', month: 'short', timeZone: 'Europe/Oslo' });
+  const timeFmt = new Intl.DateTimeFormat('nb-NO', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Oslo' });
+  const dayKey = (d) => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Oslo' }).format(d);
+
+  function slots(list) {
+    const out = [];
+    for (const a of list) {
+      for (const v of a.visninger ?? []) {
+        if (!v.startsAt) continue;
+        const start = new Date(v.startsAt);
+        // FINN only publishes the start as an absolute time; the end comes from
+        // the displayed local range, so derive it from the start's own day.
+        const mins = (t) => (t ? Number(t.slice(0, 2)) * 60 + Number(t.slice(3, 5)) : null);
+        const span = v.from && v.to ? mins(v.to) - mins(v.from) : 45;
+        out.push({ ad: a, start, end: new Date(start.getTime() + Math.max(span, 15) * 60000), from: v.from, to: v.to });
+      }
+    }
+    return out.sort((x, y) => x.start - y.start);
+  }
+
+  function renderCalendar(list) {
+    const all = slots(list);
+    const byDay = new Map();
+    for (const s of all) {
+      const k = dayKey(s.start);
+      if (!byDay.has(k)) byDay.set(k, []);
+      byDay.get(k).push(s);
+    }
+
+    const todayKey = dayKey(new Date());
+    const days = [...byDay.entries()].map(([key, items]) => {
+      // Two viewings on the same day that overlap cannot both be attended.
+      for (const s of items) s.clash = items.some((o) => o !== s && o.start < s.end && s.start < o.end);
+      const label = items[0].start;
+      return (
+        '<section class="day">' +
+        '<div class="day-label">' +
+        '<div class="dow">' + dayFmt.format(label) + '</div>' +
+        '<div class="date">' + dateFmt.format(label) + '</div>' +
+        (key === todayKey ? '<span class="today">I dag</span>' : '') +
+        '</div>' +
+        '<div class="slots">' +
+        items.map((s) => (
+          '<button type="button" class="slot' + (s.clash ? ' clash' : '') + '" data-id="' + s.ad.id + '">' +
+          '<span class="when">' + (s.from ? esc(s.from) + '–' + esc(s.to ?? '') : timeFmt.format(s.start)) +
+          (s.clash ? '<br><span class="clash-tag">krasj</span>' : '') + '</span>' +
+          (s.ad.thumb ? '<img loading="lazy" src="' + esc(s.ad.thumb) + '" alt="">' : '<span></span>') +
+          '<span class="who"><b>' + esc(s.ad.address ?? s.ad.id) + '</b><span>' + esc(s.ad.area ?? '') + '</span></span>' +
+          '<span class="figs">' + fmt(s.ad.totalpris) + '<em>' + fmt(s.ad.krM2) + ' kr/m²</em></span>' +
+          '</button>'
+        )).join('') +
+        '</div></section>'
+      );
+    });
+
+    const none = list.filter((a) => !(a.visninger ?? []).some((v) => v.startsAt));
+    const tail = none.length
+      ? '<section class="day"><div class="day-label"><div class="dow">Uten dato</div>' +
+        '<div class="date">' + none.length + ' boliger</div></div>' +
+        '<div class="no-viewing">' + none.map((a) =>
+          '<button type="button" class="chip" data-id="' + a.id + '">' + esc(a.address ?? a.id) + '</button>'
+        ).join('') + '</div></section>'
+      : '';
+
+    el('calendar-view').innerHTML =
+      (days.length ? days.join('') : '<p class="empty">Ingen annonserte visninger blant de filtrerte boligene.</p>') + tail;
+  }
+
+  // --------------------------------------------------------------------- map
+
+  // Straight-line distance. Over a 3 km spread of central Oslo the error from
+  // treating the earth as a sphere is irrelevant.
+  function km(a, b) {
+    if (a?.lat == null || b?.lat == null) return null;
+    const R = 6371;
+    const rad = Math.PI / 180;
+    const dLat = (b.lat - a.lat) * rad;
+    const dLng = (b.lng - a.lng) * rad;
+    const h =
+      Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLng / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(h));
+  }
+
+  const distFmt = (d) => (d == null ? '' : d < 1 ? Math.round(d * 1000) + ' m' : d.toFixed(1).replace('.', ',') + ' km');
+
+  function renderMap(list) {
+    const placed = list.filter((a) => a.lat != null);
+    if (!placed.length) {
+      el('map-plot').innerHTML = '<p class="empty">Ingen av de filtrerte boligene har koordinater.</p>';
+      el('map-legend').innerHTML = '';
+      return;
+    }
+
+    // Equirectangular: at 60°N a degree of longitude is half a degree of
+    // latitude on the ground, so longitude has to be squeezed to match.
+    const midLat = placed.reduce((s, a) => s + a.lat, 0) / placed.length;
+    const kx = Math.cos((midLat * Math.PI) / 180);
+    const xs = placed.map((a) => a.lng * kx);
+    const ys = placed.map((a) => -a.lat);
+    const pad = 0.0016;
+    const minX = Math.min(...xs) - pad;
+    const maxX = Math.max(...xs) + pad;
+    const minY = Math.min(...ys) - pad;
+    const maxY = Math.max(...ys) + pad;
+
+    const W = 760;
+    const H = Math.max(320, Math.round((W * (maxY - minY)) / (maxX - minX)));
+    const px = (a) => ((a.lng * kx - minX) / (maxX - minX)) * W;
+    const py = (a) => ((-a.lat - minY) / (maxY - minY)) * H;
+
+    const origin = DATA.find((a) => a.id === state.origin) ?? null;
+    const ordered = [...placed].sort((a, b) => (km(origin, a) ?? 0) - (km(origin, b) ?? 0));
+    const rank = new Map(ordered.map((a, i) => [a.id, i + 1]));
+
+    // One SVG unit in kilometres, for the rings and the scale bar.
+    const kmPerUnit = km({ lat: -minY, lng: minX / kx }, { lat: -minY, lng: maxX / kx }) / W;
+
+    let rings = '';
+    if (origin && placed.includes(origin)) {
+      const ox = px(origin);
+      const oy = py(origin);
+      for (const r of [0.5, 1, 2]) {
+        const rr = r / kmPerUnit;
+        if (rr > W * 1.4) continue;
+        rings +=
+          '<circle class="ring" cx="' + ox.toFixed(1) + '" cy="' + oy.toFixed(1) + '" r="' + rr.toFixed(1) + '"></circle>' +
+          '<text class="ring-label" x="' + ox.toFixed(1) + '" y="' + (oy - rr - 4).toFixed(1) + '" text-anchor="middle">' +
+          distFmt(r) + '</text>';
+      }
+    }
+
+    const barKm = 0.5;
+    const barW = barKm / kmPerUnit;
+    const scale =
+      '<g class="scale" transform="translate(14,' + (H - 14) + ')">' +
+      '<line x1="0" y1="0" x2="' + barW.toFixed(1) + '" y2="0"></line>' +
+      '<line x1="0" y1="-4" x2="0" y2="4"></line>' +
+      '<line x1="' + barW.toFixed(1) + '" y1="-4" x2="' + barW.toFixed(1) + '" y2="4"></line>' +
+      '<text x="' + (barW / 2).toFixed(1) + '" y="-8" text-anchor="middle">500 m</text>' +
+      '</g>';
+
+    const pins = ordered
+      .map((a) => {
+        const cls = ['pin', a.deactivated ? 'dead' : '', a.id === state.origin ? 'origin' : '', a.id === state.open ? 'active' : '']
+          .filter(Boolean)
+          .join(' ');
+        return (
+          '<g class="' + cls + '" data-id="' + a.id + '" tabindex="0" role="button">' +
+          '<title>' + esc(a.address ?? a.id) + ' — ' + fmt(monthly(a)) + ' kr/mnd</title>' +
+          '<circle cx="' + px(a).toFixed(1) + '" cy="' + py(a).toFixed(1) + '" r="11"></circle>' +
+          '<text x="' + px(a).toFixed(1) + '" y="' + (py(a) + 3.5).toFixed(1) + '">' + rank.get(a.id) + '</text>' +
+          '</g>'
+        );
+      })
+      .join('');
+
+    el('map-plot').innerHTML =
+      '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Kart over boligene">' + rings + pins + scale + '</svg>';
+
+    el('map-legend').innerHTML = ordered
+      .map((a) => {
+        const d = km(origin, a);
+        return (
+          '<li><button type="button" data-id="' + a.id + '">' +
+          '<span class="n">' + rank.get(a.id) + '</span>' +
+          '<span class="who">' + esc(a.address ?? a.id) + '<span>' + esc(a.area ?? '') + '</span></span>' +
+          '<span class="dist">' + (a.id === state.origin ? 'start' : distFmt(d)) + '</span>' +
+          '</button></li>'
+        );
+      })
+      .join('');
+  }
+
+  function renderStats() {
+    const live = DATA.filter((a) => !a.deactivated);
+    const prices = live.map((a) => a.totalpris).filter(Boolean).sort((a, b) => a - b);
+    const rateList = live.map((a) => a.krM2).filter(Boolean).sort((a, b) => a - b);
+    const median = (xs) => (xs.length ? xs[Math.floor(xs.length / 2)] : null);
+    const now = Date.now();
+    const upcoming = slots(live).filter((s) => s.end.getTime() >= now);
+    const stats = [
+      ['Annonser', DATA.length + ' <small>' + live.length + ' aktive</small>'],
+      ['Totalpris', prices.length ? fmt(prices[0]) + '–' + fmt(prices[prices.length - 1]) : '–'],
+      ['Median kr/m²', fmt(median(rateList))],
+      ['Med heis', live.filter((a) => a.heisState === 'ja').length + ' <small>av ' + live.length + '</small>'],
+      ['Visninger', upcoming.length + ' <small>kommende</small>'],
+    ];
+    el('stats').innerHTML = stats.map(([k, v]) => '<div class="stat"><dt>' + k + '</dt><dd>' + v + '</dd></div>').join('');
+  }
+
+  function render() {
+    const list = visible();
+    renderHead();
+    if (state.view === 'table') renderTable(list);
+    else if (state.view === 'cards') renderCards(list);
+    else if (state.view === 'calendar') renderCalendar(list);
+    else renderMap(list);
+    el('table-view').hidden = state.view !== 'table';
+    el('cards-view').hidden = state.view !== 'cards';
+    el('calendar-view').hidden = state.view !== 'calendar';
+    el('map-view').hidden = state.view !== 'map';
+    el('empty').hidden = list.length > 0 || state.view === 'calendar' || state.view === 'map';
+    el('count').textContent = list.length + ' av ' + DATA.length + ' boliger';
+    el('compare-bar').classList.toggle('show', state.picked.size > 0);
+    el('compare-count').textContent = state.picked.size + ' valgt';
+  }
+
+  // ------------------------------------------------------------------- sheet
+
+  function openSheet(id) {
+    const a = DATA.find((x) => x.id === id);
+    if (!a) return;
+    state.open = id;
+    const row = (k, v) => '<dt>' + k + '</dt><dd>' + v + '</dd>';
+    const shots = a.gallery?.length ? a.gallery : a.image ? [a.image] : [];
+    const strip = a.galleryThumbs?.length ? a.galleryThumbs : shots;
+    state.shot = 0;
+
+    el('sheet-content').innerHTML =
+      (shots.length
+        ? '<div class="gallery">' +
+          '<img class="hero" id="gal-img" src="' + esc(shots[0]) + '" alt="Bilde 1 av ' + shots.length + '">' +
+          (shots.length > 1
+            ? '<button type="button" class="gal-nav prev" data-shot="-1" aria-label="Forrige bilde">‹</button>' +
+              '<button type="button" class="gal-nav next" data-shot="1" aria-label="Neste bilde">›</button>' +
+              '<span class="gal-count" id="gal-count">1 / ' + shots.length + '</span>'
+            : '') +
+          '</div>' +
+          (shots.length > 1
+            ? '<div class="gal-strip" id="gal-strip">' +
+              strip.map((t, i) =>
+                '<button type="button" data-shot-index="' + i + '" aria-current="' + (i === 0) + '">' +
+                '<img loading="lazy" src="' + esc(t) + '" alt=""></button>'
+              ).join('') +
+              '</div>'
+            : '')
+        : '') +
+      '<div class="sheet-body">' +
+      '<div>' +
+      '<h2>' + esc(a.address ?? a.id) + '</h2>' +
+      '<p class="lede">' + esc(a.area ?? '') + (a.deactivated ? ' · <span class="tag dead">Deaktivert</span>' : '') + '</p>' +
+      '</div>' +
+      (a.title ? '<p class="lede">' + esc(a.title) + '</p>' : '') +
+      '<dl class="kv">' +
+      row('Totalpris', fmt(a.totalpris) + ' kr') +
+      row('Prisantydning', fmt(a.prisantydning) + ' kr') +
+      row('Omkostninger', fmt(a.omkostninger) + ' kr') +
+      row('Fellesgjeld', fmt(a.fellesgjeld) + ' kr') +
+      '<div class="sep"></div>' +
+      row('Kjøpesum (uten fellesgjeld)', fmt(kjopesum(a)) + ' kr') +
+      row('Lån ved ' + fmt(state.loan.equity) + ' kr EK', fmt(Math.max(kjopesum(a) - state.loan.equity, 0)) + ' kr') +
+      row('Lånekostnad', fmt(monthly(a) - (a.felleskostnader ?? 0)) + ' kr/mnd') +
+      row('Felleskostnader', fmt(a.felleskostnader) + ' kr/mnd') +
+      row('<strong>Sum per måned</strong>', '<strong>' + fmt(monthly(a)) + ' kr</strong>') +
+      row('Kr/m² (BRA-i)', fmt(a.krM2)) +
+      '<div class="sep"></div>' +
+      row('Eieform', esc(a.eieform ?? '–')) +
+      row('Etasje', esc(a.etasje ?? '–')) +
+      row('Soverom', a.soverom ?? '–') +
+      row('Rom', a.rom ?? '–') +
+      row('BRA-i', (a.bruksarealInternt ?? '–') + ' m²') +
+      row('Byggeår', a.byggear ?? '–') +
+      row('Energimerking', esc(a.energimerking ?? '–')) +
+      row('Heis', a.heisState === 'ja' ? 'Ja' : a.heisState === 'kanskje' ? 'Nevnt i teksten, ikke tagget' : a.heisState === 'ukjent' ? 'Ukjent' : 'Nei') +
+      '</dl>' +
+      (a.mapImage
+        ? '<a href="' + esc(a.mapUrl ?? a.url) + '" target="_blank" rel="noopener" title="Åpne kartet på FINN">' +
+          '<img class="map-static" src="' + esc(a.mapImage) + '" alt="Kart over ' + esc(a.address ?? '') + '" loading="lazy">' +
+          '</a>'
+        : '') +
+      (a.fasiliteter?.length ? '<div class="facilities">' + a.fasiliteter.map((f) => '<span class="tag">' + esc(f) + '</span>').join('') + '</div>' : '') +
+      (a.visninger?.length
+        ? '<p class="lede"><strong>Visning:</strong> ' +
+          a.visninger.map((v) => esc(v.dateLabel ?? '') + (v.from ? ' ' + esc(v.from) + '–' + esc(v.to ?? '') : '')).join('<br>') +
+          '</p>'
+        : a.visningNote
+          ? '<p class="lede"><strong>Visning:</strong> ' + esc(a.visningNote) + '</p>'
+          : '') +
+      (a.description ? '<p class="lede">' + esc(a.description) + '</p>' : '') +
+      '<div class="notes">' +
+      '<h3>Mine notater</h3>' +
+      '<textarea id="note-input" placeholder="Inntrykk fra visning, bud, hva som må sjekkes…">' +
+      esc(state.notes[a.id] ?? '') +
+      '</textarea>' +
+      '<span class="saved" id="note-saved"></span>' +
+      '</div>' +
+      '<a class="btn" href="' + esc(a.url) + '" target="_blank" rel="noopener">Åpne annonsen på FINN</a>' +
+      '</div>';
+    el('sheet').classList.add('open');
+    el('sheet').setAttribute('aria-hidden', 'false');
+    el('scrim').classList.add('open');
+    el('sheet-close').focus();
+    render();
+  }
+
+  function showShot(index) {
+    const a = DATA.find((x) => x.id === state.open);
+    const shots = a?.gallery?.length ? a.gallery : a?.image ? [a.image] : [];
+    if (shots.length < 2) return;
+    state.shot = (index + shots.length) % shots.length;
+    const img = el('gal-img');
+    img.src = shots[state.shot];
+    img.alt = 'Bilde ' + (state.shot + 1) + ' av ' + shots.length;
+    el('gal-count').textContent = state.shot + 1 + ' / ' + shots.length;
+    const strip = el('gal-strip');
+    if (!strip) return;
+    strip.querySelectorAll('[data-shot-index]').forEach((b, i) => b.setAttribute('aria-current', String(i === state.shot)));
+    strip.children[state.shot]?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }
+
+  function closeSheet() {
+    state.open = null;
+    el('sheet').classList.remove('open');
+    el('sheet').setAttribute('aria-hidden', 'true');
+    el('scrim').classList.remove('open');
+    render();
+  }
+
+  // ----------------------------------------------------------------- compare
+
+  const COMPARE_ROWS = [
+    { label: 'Totalpris', get: (a) => a.totalpris, fmt: (v) => fmt(v) + ' kr', best: 'min' },
+    { label: 'Prisantydning', get: (a) => a.prisantydning, fmt: (v) => fmt(v) + ' kr', best: 'min' },
+    { label: 'Felleskostnader', get: (a) => a.felleskostnader, fmt: (v) => fmt(v) + ' kr/mnd', best: 'min' },
+    { label: 'Kr/mnd totalt', get: (a) => monthly(a), fmt: (v) => fmt(v) + ' kr/mnd', best: 'min' },
+    { label: 'Fellesgjeld', get: (a) => a.fellesgjeld, fmt: (v) => fmt(v) + ' kr', best: 'min' },
+    { label: 'Kr/m² (BRA-i)', get: (a) => a.krM2, fmt: fmt, best: 'min' },
+    { label: 'BRA-i', get: (a) => a.bruksarealInternt, fmt: (v) => v + ' m²', best: 'max' },
+    { label: 'Soverom', get: (a) => a.soverom, fmt: (v) => v, best: 'max' },
+    { label: 'Etasje', get: (a) => a.etasje, fmt: (v) => v },
+    { label: 'Eieform', get: (a) => a.eieform, fmt: (v) => v },
+    { label: 'Heis', get: (a) => a.heisState, fmt: (v) => (v === 'ja' ? 'Ja' : v === 'kanskje' ? 'Heis?' : v === 'ukjent' ? 'Ukjent' : 'Nei') },
+    { label: 'Byggeår', get: (a) => a.byggear, fmt: (v) => v },
+    { label: 'Energimerking', get: (a) => a.energimerking, fmt: (v) => v },
+    { label: 'Status', get: (a) => (a.deactivated ? 'Deaktivert' : 'Aktiv'), fmt: (v) => v },
+  ];
+
+  function openCompare() {
+    const picks = DATA.filter((a) => state.picked.has(a.id));
+    if (!picks.length) return;
+    const head =
+      '<tr><th></th>' +
+      picks.map((a) => '<td>' + (a.thumb ? '<img src="' + esc(a.thumbLarge ?? a.thumb) + '" alt="">' : '') +
+        '<div class="name">' + esc(a.address ?? a.id) + '</div></td>').join('') +
+      '</tr>';
+    const body = COMPARE_ROWS.map((r) => {
+      const vals = picks.map((a) => r.get(a));
+      const nums = vals.filter((v) => typeof v === 'number');
+      const target = r.best && nums.length > 1 ? (r.best === 'min' ? Math.min(...nums) : Math.max(...nums)) : null;
+      return '<tr><th>' + r.label + '</th>' + vals.map((v) => {
+        const isBest = target != null && v === target;
+        return '<td' + (isBest ? ' class="best"' : '') + '>' + (v == null || v === '' ? '–' : esc(r.fmt(v))) + '</td>';
+      }).join('') + '</tr>';
+    }).join('');
+    el('compare-grid').innerHTML = '<table>' + head + body + '</table>';
+    el('compare-dialog').showModal();
+  }
+
+  // ------------------------------------------------------------------ wiring
+
+  function chipRow(container, values, bucket) {
+    el(container).innerHTML = values.map((v) =>
+      '<button type="button" class="chip" data-multi="' + bucket + '" data-value="' + esc(v) + '" aria-pressed="false">' + esc(v) + '</button>'
+    ).join(' ');
+  }
+
+  el('origin').innerHTML = DATA.filter((a) => a.lat != null)
+    .map((a) => '<option value="' + a.id + '"' + (a.id === state.origin ? ' selected' : '') + '>' + esc(a.address ?? a.id) + '</option>')
+    .join('');
+  el('origin').addEventListener('change', (e) => {
+    state.origin = e.target.value;
+    render();
+  });
+
+  chipRow('eieform-chips', [...new Set(DATA.map((a) => a.eieform).filter(Boolean))].sort(), 'eieform');
+  chipRow('soverom-chips', [...new Set(DATA.map((a) => a.soverom).filter(Boolean))].sort((a, b) => a - b).map(String), 'soverom');
+
+  document.addEventListener('click', (e) => {
+    const step = e.target.closest('[data-shot]');
+    if (step) return showShot(state.shot + Number(step.dataset.shot));
+
+    const jump = e.target.closest('[data-shot-index]');
+    if (jump) return showShot(Number(jump.dataset.shotIndex));
+
+    const view = e.target.closest('[data-view]');
+    if (view) {
+      state.view = view.dataset.view;
+      document.querySelectorAll('[data-view]').forEach((b) => b.setAttribute('aria-pressed', String(b === view)));
+      return render();
+    }
+
+    const multi = e.target.closest('[data-multi]');
+    if (multi) {
+      const set = state[multi.dataset.multi];
+      const v = multi.dataset.value;
+      set.has(v) ? set.delete(v) : set.add(v);
+      multi.setAttribute('aria-pressed', String(set.has(v)));
+      return render();
+    }
+
+    const chip = e.target.closest('[data-filter]');
+    if (chip) {
+      const key = { heis: 'heis', 'skjul-deaktiverte': 'hideDead', 'med-notat': 'hasNote' }[chip.dataset.filter];
+      state[key] = !state[key];
+      chip.setAttribute('aria-pressed', String(state[key]));
+      return render();
+    }
+
+    const pick = e.target.closest('[data-pick]');
+    if (pick) {
+      e.stopPropagation();
+      const id = pick.dataset.pick;
+      pick.checked ? state.picked.add(id) : state.picked.delete(id);
+      return render();
+    }
+
+    const th = e.target.closest('th.sortable');
+    if (th) {
+      const key = th.dataset.key;
+      state.sort = state.sort.key === key ? { key, dir: state.sort.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: 'asc' };
+      return render();
+    }
+
+    const target = e.target.closest('tr[data-id], .card[data-id], .slot[data-id], .chip[data-id], .pin[data-id], .map-legend button[data-id]');
+    if (target) return openSheet(target.dataset.id);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeSheet();
+    if (e.key === 'Enter' && e.target.matches('th.sortable')) e.target.click();
+    if (state.open && !e.target.matches('input, textarea')) {
+      if (e.key === 'ArrowLeft') showShot(state.shot - 1);
+      if (e.key === 'ArrowRight') showShot(state.shot + 1);
+    }
+  });
+
+  el('q').addEventListener('input', (e) => {
+    state.q = e.target.value.trim().toLowerCase();
+    render();
+  });
+
+  // ------------------------------------------------------------ loan inputs
+
+  function loanBasis() {
+    const { equity, rate, years, afterTax } = state.loan;
+    el('econ-summary').textContent =
+      fmt(equity) + ' kr EK · ' + String(rate).replace('.', ',') + ' % · ' + years + ' år' +
+      (afterTax ? ' · etter rentefradrag' : '');
+    el('loan-basis').textContent =
+      'Annuitetslån over ' + years + ' år til ' + String(rate).replace('.', ',') + ' %, ' +
+      fmt(equity) + ' kr egenkapital, pluss felleskostnader' +
+      (afterTax ? '. Rentefradraget er regnet av første måneds renter, så det blir mindre over tid.' : '.');
+  }
+
+  function readLoanInputs() {
+    state.loan = {
+      equity: Math.max(Number(el('equity').value) || 0, 0),
+      rate: Math.max(Number(el('rate').value) || 0, 0),
+      years: Math.min(Math.max(Number(el('years').value) || 1, 1), 40),
+      afterTax: el('after-tax').checked,
+    };
+    store.write(LOAN_KEY, state.loan);
+    loanBasis();
+    render();
+  }
+
+  el('equity').value = state.loan.equity;
+  el('rate').value = state.loan.rate;
+  el('years').value = state.loan.years;
+  el('after-tax').checked = state.loan.afterTax;
+  loanBasis();
+  for (const id of ['equity', 'rate', 'years', 'after-tax']) el(id).addEventListener('input', readLoanInputs);
+
+  // Collapsed by default; the panel is set once and then mostly in the way.
+  el('econ-wrap').open = store.read('finn.econOpen', false);
+  el('econ-wrap').addEventListener('toggle', () => store.write('finn.econOpen', el('econ-wrap').open));
+
+  // ----------------------------------------------------------------- notes
+
+  let noteTimer;
+  document.addEventListener('input', (e) => {
+    if (e.target.id !== 'note-input' || !state.open) return;
+    const id = state.open;
+    state.notes[id] = e.target.value;
+    clearTimeout(noteTimer);
+    noteTimer = setTimeout(() => {
+      const ok = store.write(NOTES_KEY, state.notes);
+      el('note-saved').textContent = ok ? 'Lagret i denne nettleseren' : 'Kunne ikke lagre — nettleseren blokkerer lagring';
+      render();
+    }, 400);
+  });
+
+  const notesStatus = (text) => {
+    el('notes-status').textContent = text;
+    setTimeout(() => (el('notes-status').textContent = ''), 4000);
+  };
+
+  el('notes-copy').addEventListener('click', async () => {
+    const filled = Object.fromEntries(Object.entries(state.notes).filter(([, v]) => v.trim()));
+    if (!Object.keys(filled).length) return notesStatus('Ingen notater å kopiere.');
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(filled));
+      notesStatus(Object.keys(filled).length + ' notater kopiert.');
+    } catch {
+      notesStatus('Nettleseren tillot ikke kopiering.');
+    }
+  });
+
+  el('notes-paste').addEventListener('click', () => {
+    const raw = prompt('Lim inn notatene som ble kopiert:');
+    if (!raw) return;
+    try {
+      const incoming = JSON.parse(raw);
+      if (typeof incoming !== 'object' || Array.isArray(incoming)) throw new Error('feil format');
+      // Merge rather than replace, so notes written in this browser survive.
+      for (const [id, text] of Object.entries(incoming)) {
+        if (typeof text === 'string' && text.trim()) state.notes[id] = text;
+      }
+      store.write(NOTES_KEY, state.notes);
+      notesStatus(Object.keys(incoming).length + ' notater lagt inn.');
+      render();
+    } catch {
+      notesStatus('Fant ingen gyldige notater i teksten.');
+    }
+  });
+
+  el('scrim').addEventListener('click', closeSheet);
+  el('sheet-close').addEventListener('click', closeSheet);
+  el('compare-go').addEventListener('click', openCompare);
+  el('compare-close').addEventListener('click', () => el('compare-dialog').close());
+  el('compare-clear').addEventListener('click', () => {
+    state.picked.clear();
+    document.querySelectorAll('[data-pick]').forEach((c) => (c.checked = false));
+    render();
+  });
+
+  const lists = META.lists ?? [];
+  el('source-line').textContent =
+    (lists.length > 1 ? lists.length + ' FINN-favorittlister' : 'FINN-favorittliste') + ' · oppdatert ' + META.updated;
+  el('footer-source').innerHTML =
+    'Kilde: ' +
+    lists
+      .map((l, i) => '<a href="' + esc(l.url) + '" target="_blank" rel="noopener">' + (l.shared ? 'delt liste' : 'egen liste') + ' ' + (i + 1) + '</a>')
+      .join(', ') +
+    '. Regenerer med <code>npm run sync</code> i <code>_tools/finn</code>.';
+
+  // Images and map tiles come from FINN's CDN. Some embedding contexts block
+  // third-party images outright; say so once rather than showing empty frames.
+  let blocked = 0;
+  document.addEventListener(
+    'error',
+    (e) => {
+      if (e.target.tagName !== 'IMG' || ++blocked !== 1) return;
+      const warning = document.createElement('span');
+      warning.textContent = 'Bildene lastes fra FINNs bildetjeneste og blir blokkert her. Åpne siden lokalt, eller bruk FINN-lenkene.';
+      warning.style.color = 'var(--signal)';
+      document.querySelector('footer.note').prepend(warning);
+    },
+    true,
+  );
+
+  renderStats();
+  render();
+</script>

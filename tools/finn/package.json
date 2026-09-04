@@ -1,0 +1,13 @@
+{
+  "name": "finn-favorites",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "postinstall": "playwright install chromium",
+    "login": "node finn-favorites.mjs --login",
+    "sync": "node finn-favorites.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.62.1"
+  }
+}
