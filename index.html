@@ -424,7 +424,7 @@
 
   /* One column template shared by the header row and every viewing, so the
      figures line up across days. */
-  .agenda { --slot-cols: 92px 62px minmax(0, 1fr) 104px 86px 42px 54px; }
+  .agenda { --slot-cols: 92px 62px minmax(0, 1fr) 104px 86px 52px 40px 42px 54px; }
 
   .slot {
     display: grid;
@@ -809,8 +809,11 @@
     .sheet { width: 100%; }
     /* A 16:9 frame is only ~210px tall on a phone; portrait shots need more. */
     .gallery { aspect-ratio: 4 / 3; }
+  }
 
-    /* Viewings: figures drop under the address as labelled pairs. */
+  /* Viewings: below this width the fixed figure columns would leave the address
+     column too narrow to read, so figures drop under it as labelled pairs. */
+  @media (max-width: 1080px) {
     .day { grid-template-columns: 1fr; gap: 4px; }
     .slot-head-row { display: none; }
     .slot { grid-template-columns: 60px 56px minmax(0, 1fr); gap: 4px 10px; }
@@ -1210,6 +1213,8 @@
           '<span class="slot-figs">' +
           '<span class="fig" data-label="Totalpris">' + fmt(s.ad.totalpris) + '</span>' +
           '<span class="fig" data-label="Felleskost">' + fmt(s.ad.felleskostnader) + '</span>' +
+          '<span class="fig" data-label="BRA-i">' + (s.ad.bruksarealInternt ?? '–') + '</span>' +
+          '<span class="fig" data-label="Etg">' + esc(s.ad.etasje ?? '–') + '</span>' +
           '<span class="fig" data-label="Sov">' + (s.ad.soverom ?? '–') + '</span>' +
           '<span class="fig heis" data-label="Heis">' + heisCell(s.ad) + '</span>' +
           '</span>' +
@@ -1232,6 +1237,7 @@
       '<div class="day slot-head-row" aria-hidden="true"><div></div>' +
       '<div class="slot-head"><span>Tid</span><span></span><span>Bolig</span>' +
       '<span class="num">Totalpris</span><span class="num">Felleskost</span>' +
+      '<span class="num">BRA-i</span><span class="num">Etg</span>' +
       '<span class="num">Sov</span><span class="mid">Heis</span></div></div>';
 
     el('calendar-view').innerHTML =
