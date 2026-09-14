@@ -603,21 +603,22 @@
 
   /* -------------------------------------------------------------- gallery */
 
-  /* Galleries mix 16:9 photos with portrait shots and floor plans, so the frame
-     letterboxes rather than crops — the whole image is always visible. */
+  /* Galleries mix 16:9 photos with portrait shots and floor plans. The frame's
+     size depends only on the pane, never on the image, so the arrows and the
+     strip below stay put while stepping through; each image letterboxes inside
+     it rather than being cropped. */
   .gallery {
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 240px;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-height: min(62vh, 620px);
     background: var(--surface-2);
   }
   .gallery img.hero {
-    display: block;
+    position: absolute;
+    inset: 0;
     width: 100%;
-    height: auto;
-    max-height: min(62vh, 620px);
+    height: 100%;
     object-fit: contain;
   }
 
@@ -806,6 +807,8 @@
   @media (max-width: 720px) {
     .wrap { padding: 20px 14px 90px; }
     .sheet { width: 100%; }
+    /* A 16:9 frame is only ~210px tall on a phone; portrait shots need more. */
+    .gallery { aspect-ratio: 4 / 3; }
 
     /* Viewings: figures drop under the address as labelled pairs. */
     .day { grid-template-columns: 1fr; gap: 4px; }
