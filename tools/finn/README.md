@@ -32,8 +32,7 @@ Flags on `node finn-favorites.mjs`:
 | `--login` | Opens a real Chrome window to sign in; the session is stored in `.browser-profile/` |
 | `--list <id>` | Overrides `config.json`'s `listId` |
 | `--shared <token,…>` | Shared lists (`/sharedfavoritelist/<token>`); a full pasted URL works too |
-| `--ids a,b,c` | Skips the login step and scrapes exactly these ad ids |
-| `--deactivated a,b` | Marks ids as deactivated (only needed with `--ids`) |
+| `--ids a,b,c` | Skips the login step and scrapes exactly these ad ids; pass active ads only |
 | `--headed` | Runs the list scrape with a visible browser, for debugging |
 | `--json` | Prints the parsed ads to stdout instead of writing the page |
 
@@ -49,10 +48,11 @@ appears once. **Shared lists need login as well** — they are not public.
 Only the favorite lists are behind login. Ad pages are public, so:
 
 1. **Lists** — Playwright with a persistent profile loads each list page and
-   reads the ad ids plus the `Deaktivert` badge. That badge exists **only** on
-   the list page; nothing on the ad page distinguishes a withdrawn ad from a
-   live one.
-2. **Ads** — plain `fetch` (6 at a time, 3 tries each) against
+   reads the ad ids plus each card's `<w-badge>`. Ads badged `Solgt`,
+   `Deaktivert`, `Inaktiv` or `Utløpt` are dropped before anything is fetched.
+   The badge exists **only** on the list page; nothing on the ad page
+   distinguishes a sold or withdrawn ad from a live one.
+2. **Ads** — plain `fetch` (4 at a time, 3 tries each) against
    `finn.no/realestate/homes/ad.html?finnkode=<id>`. No browser, no auth.
 
 There is no public JSON API for a favorite list; the page is server-rendered

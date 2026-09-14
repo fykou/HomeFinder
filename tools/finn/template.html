@@ -311,8 +311,6 @@
   tbody tr { border-bottom: 1px solid var(--line); cursor: pointer; }
   tbody tr:hover { background: var(--surface); }
   tbody tr.is-open { background: var(--accent-soft); }
-  tbody tr.is-dead { color: var(--ink-3); }
-  tbody tr.is-dead .thumb img { filter: grayscale(1); opacity: 0.55; }
 
   td { padding: 7px 10px; vertical-align: middle; }
 
@@ -354,7 +352,6 @@
     color: var(--ink-2);
     white-space: nowrap;
   }
-  .tag.dead { border-color: var(--signal); background: var(--signal-soft); color: var(--signal); }
   .yes { color: var(--accent); font-weight: 600; }
   .no { color: var(--ink-3); }
   .maybe { color: var(--signal); font-weight: 600; }
@@ -384,7 +381,6 @@
     padding: 0;
   }
   .card:hover { border-color: var(--accent); }
-  .card.is-dead img { filter: grayscale(1); opacity: 0.6; }
   .card img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; background: var(--surface-2); }
   .card-body { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px 14px; }
   .card-body h3 { margin: 0; font-family: var(--font-display); font-size: 16px; font-weight: 500; line-height: 1.2; }
@@ -422,9 +418,13 @@
 
   .slots { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
 
+  /* One column template shared by the header row and every viewing, so the
+     figures line up across days. */
+  .agenda { --slot-cols: 92px 62px minmax(0, 1fr) 104px 86px 42px 54px; }
+
   .slot {
     display: grid;
-    grid-template-columns: 92px 62px 1fr auto;
+    grid-template-columns: var(--slot-cols);
     gap: 14px;
     align-items: center;
     width: 100%;
@@ -444,8 +444,23 @@
   .slot img { width: 62px; height: 44px; object-fit: cover; border-radius: var(--r-sm); background: var(--surface-2); display: block; }
   .slot .who b { display: block; font-weight: 600; font-size: 14.5px; }
   .slot .who span { font-size: 12px; color: var(--ink-3); }
-  .slot .figs { font-family: var(--font-mono); font-size: 13px; white-space: nowrap; text-align: right; }
-  .slot .figs em { font-style: normal; display: block; font-size: 11px; color: var(--ink-3); }
+  .slot-figs { display: contents; }
+  .fig { font-family: var(--font-mono); font-size: 13px; white-space: nowrap; text-align: right; }
+  .fig.heis { text-align: center; font-family: var(--font-body); }
+
+  .slot-head {
+    display: grid;
+    grid-template-columns: var(--slot-cols);
+    gap: 14px;
+    padding: 0 8px 6px 0;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .slot-head .num { text-align: right; }
+  .slot-head .mid { text-align: center; }
   .slot.clash { box-shadow: inset 3px 0 0 var(--signal); padding-left: 10px; }
   .clash-tag { color: var(--signal); font-size: 11.5px; font-family: var(--font-mono); }
 
@@ -466,7 +481,6 @@
   .map-plot .pin { cursor: pointer; }
   .map-plot .pin circle { fill: var(--accent); stroke: var(--surface); stroke-width: 2; }
   .map-plot .pin text { fill: var(--accent-ink); font-family: var(--font-mono); font-size: 10px; text-anchor: middle; pointer-events: none; }
-  .map-plot .pin.dead circle { fill: var(--ink-3); }
   .map-plot .pin.origin circle { fill: var(--signal); }
   .map-plot .pin.active circle { stroke: var(--ink); stroke-width: 3; }
   .map-plot .ring { fill: none; stroke: var(--line-strong); stroke-dasharray: 3 4; }
@@ -660,20 +674,42 @@
   .kv dd { margin: 0; font-family: var(--font-mono); font-size: 13.5px; text-align: right; }
   .kv .sep { grid-column: 1 / -1; height: 1px; background: var(--line); }
 
+  /* Sticky, so closing stays one tap away however far the pane is scrolled —
+     on a phone the pane fills the screen and there is no backdrop to tap. */
+  .sheet-bar {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 8px 6px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+  }
+  .sheet-bar-title {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-weight: 600;
+    font-size: 14px;
+  }
   .sheet-close {
-    position: absolute;
-    top: 10px;
-    right: 12px;
-    width: 32px;
-    height: 32px;
+    flex: 0 0 auto;
+    min-height: 44px;
+    padding: 0 16px;
     border-radius: 999px;
     border: 1px solid var(--line-strong);
     background: var(--surface);
     color: var(--ink);
-    font-size: 17px;
-    line-height: 1;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
   }
+  .sheet-close:hover { border-color: var(--accent); }
 
   .btn {
     display: inline-block;
@@ -766,6 +802,20 @@
   @media (max-width: 720px) {
     .wrap { padding: 20px 14px 90px; }
     .sheet { width: 100%; }
+
+    /* Viewings: figures drop under the address as labelled pairs. */
+    .day { grid-template-columns: 1fr; gap: 4px; }
+    .slot-head-row { display: none; }
+    .slot { grid-template-columns: 60px 56px minmax(0, 1fr); gap: 4px 10px; }
+    .slot .when { white-space: normal; }
+    .slot-figs { display: flex; flex-wrap: wrap; gap: 2px 14px; grid-column: 2 / -1; }
+    .fig, .fig.heis { text-align: left; font-size: 12.5px; }
+    .fig::before {
+      content: attr(data-label) ' ';
+      font-family: var(--font-body);
+      font-size: 11.5px;
+      color: var(--ink-3);
+    }
   }
 </style>
 
@@ -801,7 +851,6 @@
       <span id="soverom-chips"></span>
     </div>
 
-    <button type="button" class="chip" data-filter="skjul-deaktiverte" aria-pressed="false">Skjul deaktiverte</button>
     <button type="button" class="chip" data-filter="med-notat" aria-pressed="false">Med notat</button>
 
     <input type="search" id="q" placeholder="Sok adresse eller omrade" aria-label="Sok adresse eller omrade">
@@ -876,7 +925,10 @@
 <div class="scrim" id="scrim"></div>
 
 <aside class="sheet" id="sheet" aria-hidden="true" aria-label="Detaljer">
-  <button type="button" class="sheet-close" id="sheet-close" aria-label="Lukk">×</button>
+  <div class="sheet-bar">
+    <span class="sheet-bar-title" id="sheet-bar-title"></span>
+    <button type="button" class="sheet-close" id="sheet-close">Lukk ✕</button>
+  </div>
   <div id="sheet-content"></div>
 </aside>
 
@@ -941,7 +993,6 @@
     view: 'table',
     sort: { key: 'totalpris', dir: 'asc' },
     heis: false,
-    hideDead: false,
     eieform: new Set(),
     soverom: new Set(),
     q: '',
@@ -989,7 +1040,6 @@
     { key: 'eieform', label: 'Eieform', sortable: true },
     { key: 'heisState', label: 'Heis', sortable: true },
     { key: 'byggear', label: 'Byggeår', sortable: true, num: true },
-    { key: 'status', label: 'Status', sortable: true },
   ];
 
   const el = (id) => document.getElementById(id);
@@ -1000,7 +1050,6 @@
   function visible() {
     let out = DATA.filter((a) => {
       if (state.heis && a.heisState !== 'ja') return false;
-      if (state.hideDead && a.deactivated) return false;
       if (state.eieform.size && !state.eieform.has(a.eieform)) return false;
       if (state.soverom.size && !state.soverom.has(String(a.soverom))) return false;
       if (state.hasNote && !noteFor(a.id)) return false;
@@ -1011,7 +1060,6 @@
     const { key, dir } = state.sort;
     const sign = dir === 'asc' ? 1 : -1;
     const value = (ad) => {
-      if (key === 'status') return ad.deactivated ? 1 : 0;
       if (key === 'etasje') return Number(ad.etasje);
       if (key === 'maanedskost') return monthly(ad);
       return ad[key];
@@ -1058,7 +1106,7 @@
 
   function renderTable(list) {
     el('rows').innerHTML = list.map((a) => (
-      '<tr data-id="' + a.id + '" class="' + (a.deactivated ? 'is-dead ' : '') + (state.open === a.id ? 'is-open' : '') + '">' +
+      '<tr data-id="' + a.id + '" class="' + (state.open === a.id ? 'is-open' : '') + '">' +
       '<td class="pick"><input type="checkbox" aria-label="Velg for sammenligning" data-pick="' + a.id + '"' + (state.picked.has(a.id) ? ' checked' : '') + '></td>' +
       '<td class="thumb">' + (a.thumb ? '<img loading="lazy" src="' + esc(a.thumb) + '" alt="">' : '') + '</td>' +
       '<td><span class="addr"><b>' + esc(a.address ?? a.id) +
@@ -1074,14 +1122,13 @@
       '<td>' + esc(a.eieform ?? '–') + '</td>' +
       '<td>' + heisCell(a) + '</td>' +
       '<td class="num money">' + (a.byggear ?? '–') + '</td>' +
-      '<td>' + (a.deactivated ? '<span class="tag dead">Deaktivert</span>' : '<span class="tag">Aktiv</span>') + '</td>' +
       '</tr>'
     )).join('');
   }
 
   function renderCards(list) {
     el('cards-view').innerHTML = list.map((a) => (
-      '<button type="button" class="card' + (a.deactivated ? ' is-dead' : '') + '" data-id="' + a.id + '">' +
+      '<button type="button" class="card" data-id="' + a.id + '">' +
       (a.thumb ? '<img loading="lazy" src="' + esc(a.thumbLarge ?? a.thumb) + '" alt="">' : '') +
       '<span class="card-body">' +
       '<h3>' + esc(a.address ?? a.id) + (noteFor(a.id) ? '<span class="note-dot" title="Har notat"></span>' : '') + '</h3>' +
@@ -1097,7 +1144,6 @@
       '<span class="tag">' + esc(a.etasje ?? '–') + '. etg</span>' +
       '<span class="tag">' + esc(a.eieform ?? '–') + '</span>' +
       (a.heisState === 'ja' ? '<span class="tag">Heis</span>' : a.heisState === 'kanskje' ? '<span class="tag">Heis?</span>' : '') +
-      (a.deactivated ? '<span class="tag dead">Deaktivert</span>' : '') +
       '</span></span></button>'
     )).join('');
   }
@@ -1149,11 +1195,16 @@
         '<div class="slots">' +
         items.map((s) => (
           '<button type="button" class="slot' + (s.clash ? ' clash' : '') + '" data-id="' + s.ad.id + '">' +
-          '<span class="when">' + (s.from ? esc(s.from) + '–' + esc(s.to ?? '') : timeFmt.format(s.start)) +
+          '<span class="when">' + (s.from ? esc(s.from) + '–<wbr>' + esc(s.to ?? '') : timeFmt.format(s.start)) +
           (s.clash ? '<br><span class="clash-tag">krasj</span>' : '') + '</span>' +
           (s.ad.thumb ? '<img loading="lazy" src="' + esc(s.ad.thumb) + '" alt="">' : '<span></span>') +
           '<span class="who"><b>' + esc(s.ad.address ?? s.ad.id) + '</b><span>' + esc(s.ad.area ?? '') + '</span></span>' +
-          '<span class="figs">' + fmt(s.ad.totalpris) + '<em>' + fmt(s.ad.krM2) + ' kr/m²</em></span>' +
+          '<span class="slot-figs">' +
+          '<span class="fig" data-label="Totalpris">' + fmt(s.ad.totalpris) + '</span>' +
+          '<span class="fig" data-label="Felleskost">' + fmt(s.ad.felleskostnader) + '</span>' +
+          '<span class="fig" data-label="Sov">' + (s.ad.soverom ?? '–') + '</span>' +
+          '<span class="fig heis" data-label="Heis">' + heisCell(s.ad) + '</span>' +
+          '</span>' +
           '</button>'
         )).join('') +
         '</div></section>'
@@ -1169,8 +1220,14 @@
         ).join('') + '</div></section>'
       : '';
 
+    const head =
+      '<div class="day slot-head-row" aria-hidden="true"><div></div>' +
+      '<div class="slot-head"><span>Tid</span><span></span><span>Bolig</span>' +
+      '<span class="num">Totalpris</span><span class="num">Felleskost</span>' +
+      '<span class="num">Sov</span><span class="mid">Heis</span></div></div>';
+
     el('calendar-view').innerHTML =
-      (days.length ? days.join('') : '<p class="empty">Ingen annonserte visninger blant de filtrerte boligene.</p>') + tail;
+      (days.length ? head + days.join('') : '<p class="empty">Ingen annonserte visninger blant de filtrerte boligene.</p>') + tail;
   }
 
   // --------------------------------------------------------------------- map
@@ -1248,7 +1305,7 @@
 
     const pins = ordered
       .map((a) => {
-        const cls = ['pin', a.deactivated ? 'dead' : '', a.id === state.origin ? 'origin' : '', a.id === state.open ? 'active' : '']
+        const cls = ['pin', a.id === state.origin ? 'origin' : '', a.id === state.open ? 'active' : '']
           .filter(Boolean)
           .join(' ');
         return (
@@ -1279,17 +1336,16 @@
   }
 
   function renderStats() {
-    const live = DATA.filter((a) => !a.deactivated);
-    const prices = live.map((a) => a.totalpris).filter(Boolean).sort((a, b) => a - b);
-    const rateList = live.map((a) => a.krM2).filter(Boolean).sort((a, b) => a - b);
+    const prices = DATA.map((a) => a.totalpris).filter(Boolean).sort((a, b) => a - b);
+    const rateList = DATA.map((a) => a.krM2).filter(Boolean).sort((a, b) => a - b);
     const median = (xs) => (xs.length ? xs[Math.floor(xs.length / 2)] : null);
     const now = Date.now();
-    const upcoming = slots(live).filter((s) => s.end.getTime() >= now);
+    const upcoming = slots(DATA).filter((s) => s.end.getTime() >= now);
     const stats = [
-      ['Annonser', DATA.length + ' <small>' + live.length + ' aktive</small>'],
+      ['Annonser', String(DATA.length)],
       ['Totalpris', prices.length ? fmt(prices[0]) + '–' + fmt(prices[prices.length - 1]) : '–'],
       ['Median kr/m²', fmt(median(rateList))],
-      ['Med heis', live.filter((a) => a.heisState === 'ja').length + ' <small>av ' + live.length + '</small>'],
+      ['Med heis', DATA.filter((a) => a.heisState === 'ja').length + ' <small>av ' + DATA.length + '</small>'],
       ['Visninger', upcoming.length + ' <small>kommende</small>'],
     ];
     el('stats').innerHTML = stats.map(([k, v]) => '<div class="stat"><dt>' + k + '</dt><dd>' + v + '</dd></div>').join('');
@@ -1317,7 +1373,17 @@
   function openSheet(id) {
     const a = DATA.find((x) => x.id === id);
     if (!a) return;
+    // Phones close panes with the back gesture, so an open pane gets its own
+    // history entry and going back closes it instead of leaving the page.
+    if (!state.open) {
+      try {
+        history.pushState({ sheet: true }, '');
+      } catch {
+        // Some embedding sandboxes refuse history writes; the close button still works.
+      }
+    }
     state.open = id;
+    el('sheet-bar-title').textContent = a.address ?? a.id;
     const row = (k, v) => '<dt>' + k + '</dt><dd>' + v + '</dd>';
     const shots = a.gallery?.length ? a.gallery : a.image ? [a.image] : [];
     const strip = a.galleryThumbs?.length ? a.galleryThumbs : shots;
@@ -1345,7 +1411,7 @@
       '<div class="sheet-body">' +
       '<div>' +
       '<h2>' + esc(a.address ?? a.id) + '</h2>' +
-      '<p class="lede">' + esc(a.area ?? '') + (a.deactivated ? ' · <span class="tag dead">Deaktivert</span>' : '') + '</p>' +
+      '<p class="lede">' + esc(a.area ?? '') + '</p>' +
       '</div>' +
       (a.title ? '<p class="lede">' + esc(a.title) + '</p>' : '') +
       '<dl class="kv">' +
@@ -1415,13 +1481,24 @@
     strip.children[state.shot]?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }
 
-  function closeSheet() {
+  function hideSheet() {
     state.open = null;
     el('sheet').classList.remove('open');
     el('sheet').setAttribute('aria-hidden', 'true');
     el('scrim').classList.remove('open');
     render();
   }
+
+  function closeSheet() {
+    if (!state.open) return;
+    // Unwind the entry openSheet pushed; popstate then does the hiding.
+    if (history.state?.sheet) history.back();
+    else hideSheet();
+  }
+
+  window.addEventListener('popstate', () => {
+    if (state.open) hideSheet();
+  });
 
   // ----------------------------------------------------------------- compare
 
@@ -1439,7 +1516,6 @@
     { label: 'Heis', get: (a) => a.heisState, fmt: (v) => (v === 'ja' ? 'Ja' : v === 'kanskje' ? 'Heis?' : v === 'ukjent' ? 'Ukjent' : 'Nei') },
     { label: 'Byggeår', get: (a) => a.byggear, fmt: (v) => v },
     { label: 'Energimerking', get: (a) => a.energimerking, fmt: (v) => v },
-    { label: 'Status', get: (a) => (a.deactivated ? 'Deaktivert' : 'Aktiv'), fmt: (v) => v },
   ];
 
   function openCompare() {
@@ -1507,7 +1583,7 @@
 
     const chip = e.target.closest('[data-filter]');
     if (chip) {
-      const key = { heis: 'heis', 'skjul-deaktiverte': 'hideDead', 'med-notat': 'hasNote' }[chip.dataset.filter];
+      const key = { heis: 'heis', 'med-notat': 'hasNote' }[chip.dataset.filter];
       state[key] = !state[key];
       chip.setAttribute('aria-pressed', String(state[key]));
       return render();

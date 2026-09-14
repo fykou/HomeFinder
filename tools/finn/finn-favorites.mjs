@@ -2,10 +2,11 @@
 // Scrapes a FINN.no favorite list into boliger.html, a self-contained
 // comparison page rendered from template.html.
 //
-// Two-step, because only the list itself is behind login:
-//   1. favorite list -> ad ids + list-only status ("Deaktivert"), via Playwright
-//      with a persistent browser profile (log in once using --login).
-//   2. each ad page  -> full details, via plain fetch. Ad pages are public.
+// Two-step, because only the lists are behind login:
+//   1. favorite lists -> ad ids + list-only status ("Solgt", "Deaktivert"), via
+//      Playwright with a persistent browser profile (log in once using --login).
+//      Sold and deactivated ads are dropped here.
+//   2. each ad page   -> full details, via plain fetch. Ad pages are public.
 
 import { mkdir, readFile, writeFile, rename } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
@@ -108,17 +109,19 @@ async function scrapeOne(page, list) {
   // beacon traffic to go quiet, which on FINN can take longer than the page.
   await page.waitForSelector(AD_LINK, { timeout: 30_000 }).catch(() => {})
 
-  // Each favorite is an <a href="/<adId>">; "Deaktivert" is shown on the card
-  // and nowhere on the ad page itself, so it has to be read here.
+  // Each favorite is an <a href="/<adId>">. Its status is a <w-badge> on the
+  // card and appears nowhere on the ad page, so it has to be read here. Reading
+  // the badge rather than the card text keeps an ad titled "raskt solgt" in.
   return page.evaluate(() => {
     const links = [...document.querySelectorAll('a[href]')].filter((a) => /^\/\d+$/.test(a.getAttribute('href')))
     return links.map((a) => {
       const card = a.closest('article, li') ?? a.parentElement?.parentElement
       const text = card?.innerText ?? ''
+      const badges = [...(card?.querySelectorAll('w-badge') ?? [])].map((b) => b.textContent.trim())
       return {
         id: a.getAttribute('href').slice(1),
         listTitle: (a.innerText || '').trim(),
-        deactivated: /Deaktivert|Inaktiv/i.test(text),
+        status: badges.find((b) => /^(Solgt|Deaktivert|Inaktiv|Utløpt)$/i.test(b)) ?? null,
         changed: (text.match(/Endret:\s*([^\n]+)/) ?? [])[1] ?? null,
       }
     })
@@ -134,11 +137,11 @@ async function scrapeLists(lists) {
     for (const list of lists) {
       const items = await scrapeOne(page, list)
       console.error(`  ${listUrl(list)} -> ${items.length} ads`)
-      // An ad in two lists keeps its first entry; a "Deaktivert" badge from
-      // any list wins, since it is a fact about the ad rather than the list.
+      // An ad in two lists keeps its first entry; a status badge from any list
+      // wins, since it is a fact about the ad rather than the list.
       for (const item of items) {
         const seen = byId.get(item.id)
-        byId.set(item.id, seen ? { ...seen, deactivated: seen.deactivated || item.deactivated } : item)
+        byId.set(item.id, seen ? { ...seen, status: seen.status ?? item.status } : item)
       }
     }
   } finally {
@@ -370,7 +373,6 @@ const forPage = (ad) => ({
   visninger: ad.visninger,
   visningNote: ad.visningNote,
   description: ad.description,
-  deactivated: Boolean(ad.deactivated),
   lat: ad.lat,
   lng: ad.lng,
   mapImage: ad.mapImage,
@@ -426,14 +428,19 @@ async function main() {
 
   if (flag('login')) return login(lists.find((l) => !l.shared)?.id ?? lists[0].id)
 
-  // --ids skips the login step entirely, for re-running against known ads.
-  // Status only exists on the list page, so it can be supplied alongside it.
+  // --ids skips the login step entirely, for re-running against known ads. The
+  // status badges only exist on the list pages, so those ids are taken as-is:
+  // pass active ads only.
   const idsArg = opt('ids', null)
-  const dead = new Set((opt('deactivated', '') || '').split(',').map((s) => s.trim()).filter(Boolean))
-  const listItems = idsArg
-    ? idsArg.split(',').map((id) => ({ id: id.trim(), deactivated: dead.has(id.trim()) }))
+  const listed = idsArg
+    ? idsArg.split(',').map((id) => ({ id: id.trim(), status: null }))
     : await scrapeLists(lists)
-  console.error(`${listItems.length} ads across ${lists.length} list(s)`)
+
+  const dropped = listed.filter((item) => item.status)
+  const listItems = listed.filter((item) => !item.status)
+  for (const item of dropped) console.error(`  dropped ${item.id}: ${item.status}`)
+  console.error(`${listItems.length} active ads across ${lists.length} list(s)`)
+  if (!listItems.length) throw new Error('No active ads left; leaving the existing page untouched.')
 
   const scrapedAt = new Date().toISOString().slice(0, 10)
   // One unreachable ad must not cost the whole run; failures are collected and
