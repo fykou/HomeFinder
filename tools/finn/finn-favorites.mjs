@@ -245,8 +245,27 @@ function position(html, id) {
   }
 }
 
+// Some sellers leave the price box's "Felleskost/mnd." empty and state the
+// amount only in the "Felleskostnader inkluderer" prose. Only a line that opens
+// with "Totale felleskostnader" is trusted: that prose also lists components
+// and side costs per month ("garasjeplass kr 165 pr. mnd"), and matching any
+// monthly amount picked those up in place of the total.
+function commonCostFromText(html) {
+  const block = html.match(/data-testid="common-cost"[^>]*>(.*?)<\/div>/s)?.[1]
+  if (!block) return null
+  for (const line of block.split(/<br\s*\/?>/i)) {
+    const text = clean(line) ?? ''
+    if (!/^total[et]?\s+felleskostnad/i.test(text)) continue
+    const amount = text.match(/kr\.?\s*(\d[\d .]*\d|\d)/i)?.[1]
+    if (amount) return Number(amount.replace(/[ .]/g, ''))
+  }
+  return null
+}
+
 function parseAd(html, id) {
   const meta = (p) => clean(html.match(new RegExp(`<meta property="og:${p}" content="(.*?)"`, 's'))?.[1])
+  const commonCost = num(dd(html, 'pricing-common-monthly-cost'))
+  const commonCostText = commonCost == null ? commonCostFromText(html) : null
   const facilities = targeting(html, 'facilities')
   const title = meta('title')
   const description = meta('description')
@@ -268,7 +287,8 @@ function parseAd(html, id) {
     prisantydning: num(clean(priceBlock)?.replace(/^Prisantydning/, '')),
     totalpris: num(dd(html, 'pricing-total-price')),
     omkostninger: num(dd(html, 'pricing-registration-charge')),
-    felleskostnader: num(dd(html, 'pricing-common-monthly-cost')),
+    felleskostnader: commonCost ?? commonCostText,
+    felleskostnaderFraTekst: commonCostText != null,
     fellesgjeld: num(dd(html, 'pricing-joint-debt')),
     fellesformue: num(dd(html, 'pricing-collective-assets')),
     formuesverdi: num(dd(html, 'pricing-tax-value')),
@@ -359,6 +379,7 @@ const forPage = (ad) => ({
   prisantydning: ad.prisantydning,
   omkostninger: ad.omkostninger,
   felleskostnader: ad.felleskostnader,
+  felleskostnaderFraTekst: ad.felleskostnaderFraTekst,
   fellesgjeld: ad.fellesgjeld,
   eieform: ad.eieform,
   soverom: ad.soverom,

@@ -1432,7 +1432,7 @@
       row('Kjøpesum (uten fellesgjeld)', fmt(kjopesum(a)) + ' kr') +
       row('Lån ved ' + fmt(state.loan.equity) + ' kr EK', fmt(Math.max(kjopesum(a) - state.loan.equity, 0)) + ' kr') +
       row('Lånekostnad', fmt(monthly(a) - (a.felleskostnader ?? 0)) + ' kr/mnd') +
-      row('Felleskostnader', fmt(a.felleskostnader) + ' kr/mnd') +
+      row('Felleskostnader' + (a.felleskostnaderFraTekst ? ' <small>(fra annonseteksten)</small>' : ''), fmt(a.felleskostnader) + ' kr/mnd') +
       row('<strong>Sum per måned</strong>', '<strong>' + fmt(monthly(a)) + ' kr</strong>') +
       row('Kr/m² (BRA-i)', fmt(a.krM2)) +
       '<div class="sep"></div>' +
